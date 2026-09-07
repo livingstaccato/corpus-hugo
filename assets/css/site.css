@@ -624,6 +624,14 @@ h4 {
     row-gap: 10px;
   }
 
+  /* Force the title onto its own row unconditionally, rather than letting
+     wrap decide per-page: a short site title fits beside the nav on one
+     row while a long one wraps alone, so header height (and everything
+     below it) jumped between corpora with different title lengths. */
+  .ctx-switcher {
+    flex: 1 1 100%;
+  }
+
   .nav {
     flex-wrap: wrap;
   }
