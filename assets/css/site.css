@@ -589,8 +589,6 @@ h4 {
 
 /* ── Responsive ── */
 @media (max-width: 720px) {
-  .site-header,
-  .header-inner,
   .hero,
   .content-layout,
   .page-heading,
@@ -598,14 +596,30 @@ h4 {
     align-items: flex-start;
   }
 
-  .site-header,
-  .header-inner,
-  .header-actions,
-  .nav,
   .content-layout,
   .page-heading,
   .footer-inner {
     flex-direction: column;
+  }
+
+  /* Wrap instead of stacking one-item-per-row: title takes its own line,
+     nav pills + toggle flow onto the next as a group, however many that
+     takes — a full column stack of a 1.35rem title, one row per nav link,
+     and the toggle burns most of a phone's viewport before any content. */
+  .header-inner {
+    flex-wrap: wrap;
+    min-height: 0;
+    padding: 14px 0;
+    row-gap: 10px;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+  }
+
+  .nav a,
+  .nav-dropdown-toggle {
+    padding: 6px 12px;
   }
 
   .content-layout {

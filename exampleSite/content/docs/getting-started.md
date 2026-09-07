@@ -9,6 +9,7 @@ sources:
 related:
   - theming
   - team
+  - front-matter
 ---
 
 Add the theme to a Hugo site's `themesDir`, then set `theme = "corpus-hugo"`
