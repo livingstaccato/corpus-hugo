@@ -3,17 +3,38 @@ title = "Corpus Theme — Example"
 theme = "corpus-hugo"
 themesDir = "../.."
 
+[markup.goldmark.renderer]
+  unsafe = true
+
 [security]
   [security.funcs]
     getenv = ['^HUGO_', '^CI$']
 
+[outputFormats.searchindex]
+  mediaType = "application/json"
+  baseName = "search-index"
+  isPlainText = true
+  notAlternative = true
+
+[outputs]
+  home = ["HTML", "searchindex"]
+
 [params]
-  description = "Theme example."
+  description = "A tokenized, light/dark Hugo theme for a knowledge base or docs site — this page is itself built with it."
   knowledge_id = "example"
-  tagline = "Tokenized light/dark knowledge-base theme."
-  github = "https://example.invalid"
+  tagline = "Corpus"
+  search_enabled = true
+  cta_url = "/docs/getting-started/"
+  cta_label = "Read the docs"
+  copyrightHolder = "Corpus"
+  github = "https://github.com/livingstaccato/corpus-hugo"
 
 [[menu.main]]
   name = "Docs"
   url = "/docs/"
   weight = 1
+
+[[menu.main]]
+  name = "Guides"
+  url = "/guides/"
+  weight = 2

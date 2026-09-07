@@ -2,4 +2,6 @@
 title: Home
 ---
 
-Example home for the shared theme.
+This example site is built with **corpus-hugo**. Everything on it — the
+dark-mode toggle, section navigation, search, related links, member
+chips — is the theme, unmodified.
