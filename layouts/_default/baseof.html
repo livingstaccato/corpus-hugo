@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="{{ site.Language.Locale | default "en" }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+      (function(){var t;try{t=localStorage.getItem("kb-theme")}catch(e){}
+      if(t){document.documentElement.setAttribute("data-theme",t)}})();
+    </script>
+    <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} | {{ site.Title }}{{ end }}</title>
+    <meta name="description" content="{{ with or .Params.description site.Params.description }}{{ . }}{{ end }}">
+    {{ $tokens := resources.Get "css/tokens.css" }}
+    {{ $site := resources.Get "css/site.css" }}
+    {{ $content := resources.Get "css/content.css" }}
+    {{ $css := slice $tokens $site $content | resources.Concat "css/theme.css" | resources.Minify | resources.Fingerprint }}
+    <link rel="stylesheet" href="{{ $css.RelPermalink }}">
+    {{ $js := slice (resources.Get "js/theme-toggle.js") (resources.Get "js/ctx-switcher.js") (resources.Get "js/member-chip.js") | resources.Concat "js/head.js" | resources.Minify | resources.Fingerprint }}
+    <script src="{{ $js.RelPermalink }}" defer></script>
+  </head>
+  <body>
+    {{ with site.Params.watermark }}<img class="site-watermark" src="{{ . | relURL }}" alt="" aria-hidden="true">{{ end }}
+    {{ partial "header.html" . }}
+    <main>{{ block "main" . }}{{ end }}</main>
+    {{ partial "footer.html" . }}
+  </body>
+</html>

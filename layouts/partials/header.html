@@ -1,0 +1,29 @@
+<header class="site-header">
+  <div class="header-inner">
+    <div class="ctx-switcher"
+         data-knowledge-id="{{ site.Params.knowledge_id }}"
+         data-manifest="{{ printf "%scontexts.json" (site.Params.knowledge_hub_root | default "/knowledge/") }}">
+      <a class="site-home ctx-current" href="{{ site.Home.RelPermalink }}"
+         aria-haspopup="listbox" aria-expanded="false">{{ site.Title }}</a>
+      <ul class="ctx-menu" role="listbox" aria-label="Knowledge contexts" hidden></ul>
+    </div>
+    <nav class="nav" aria-label="Primary">
+      {{ $section := .Section }}
+      {{ range site.Menus.main }}
+        {{ if .HasChildren }}
+          <div class="nav-dropdown">
+            <button type="button" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">{{ .Name }} ▾</button>
+            <div class="nav-dropdown-menu">
+              {{ range .Children }}
+                <a href="{{ .URL | relURL }}">{{ .Name }}</a>
+              {{ end }}
+            </div>
+          </div>
+        {{ else }}
+          <a {{ if eq $section (trim .URL "/") }}class="active"{{ end }} href="{{ .URL | relURL }}">{{ .Name }}</a>
+        {{ end }}
+      {{ end }}
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Toggle dark mode" onclick="window.__kbToggleTheme()">◐</button>
+  </div>
+</header>

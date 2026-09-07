@@ -1,0 +1,92 @@
+{{ define "main" }}
+  {{ $content := replaceRE `(?s)^\s*<h1[^>]*>.*?</h1>\s*` "" .Content }}
+  <article class="page-shell content-layout">
+    {{ with .CurrentSection }}
+      <aside class="section-tree" aria-label="Section navigation">
+        <a class="tree-title" href="{{ .RelPermalink }}">{{ .Title }}</a>
+        <nav>
+          {{ range .Pages.ByTitle }}
+            {{ if eq .Kind "section" }}
+              <details open class="tree-group">
+                <summary><a href="{{ .RelPermalink }}">{{ .Title }}</a></summary>
+                {{ range .RegularPages.ByTitle }}
+                  <a class="tree-leaf {{ if eq .RelPermalink $.RelPermalink }}active{{ end }}" href="{{ .RelPermalink }}">{{ .Title }}</a>
+                {{ end }}
+              </details>
+            {{ else }}
+              <a {{ if eq .RelPermalink $.RelPermalink }}class="active"{{ end }} href="{{ .RelPermalink }}">{{ .Title }}</a>
+            {{ end }}
+          {{ end }}
+        </nav>
+      </aside>
+    {{ end }}
+    <div class="content-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="{{ site.Home.RelPermalink }}">{{ site.Title }}</a>
+        {{ with .CurrentSection }}{{ if not .IsHome }}<span> / </span><a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}{{ end }}
+        <span> / </span><span>{{ .Title }}</span>
+      </nav>
+      <div class="page-heading">
+        <div class="page-title">
+          <p class="section-label">{{ if .Section }}{{ .Section }}{{ else }}{{ with site.Params.tagline }}{{ . }}{{ else }}knowledge{{ end }}{{ end }}</p>
+          <h1>{{ .Title }}</h1>
+          {{ with or .Params.description .Params.summary }}<p class="lede">{{ . }}</p>{{ end }}
+        </div>
+      </div>
+      <div class="page-body">
+        {{ $content | safeHTML }}
+      </div>
+      {{ with .Params.related }}
+        <div class="related" aria-label="Related">
+          <span class="prov-label">Related</span>
+          <ul class="rel-list">
+            {{ range . }}
+              {{ $r := . }}
+              {{ if strings.HasPrefix $r "x-kb:" }}
+                {{- $rest := strings.TrimPrefix "x-kb:" $r -}}
+                {{- $segs := split $rest "/" -}}
+                {{- $id := index $segs 0 -}}
+                {{- $page := delimit (after 1 $segs) "/" -}}
+                {{- $page = cond (strings.HasSuffix $page "README") (strings.TrimSuffix "README" $page) $page -}}
+                {{- $sub := cond (eq $id site.Params.knowledge_hub_root_id) "" $id -}}
+                {{- $href := printf "/%s/" (path.Join "knowledge" $sub $page) -}}
+                <li><a href="{{ $href }}" class="x-kb-link">{{ $page | path.Base | humanize }}</a> <span class="rel-kb">({{ $id }})</span></li>
+              {{ else }}
+                {{- /* Resolve a same-corpus related entry. Try the value as-is, then
+                       under every top-level section, so a bare slug resolves without
+                       rewriting content. Unresolved → plain text, never a 404. */ -}}
+                {{- $p := site.GetPage $r -}}
+                {{- range site.Sections -}}
+                  {{- if not $p }}{{ $p = site.GetPage (printf "/%s/%s" .Section $r) }}{{ end -}}
+                {{- end -}}
+                {{ with $p }}<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>{{ else }}<li><span class="rel-unlinked">{{ $r }}</span></li>{{ end }}
+              {{ end }}
+            {{ end }}
+          </ul>
+        </div>
+      {{ end }}
+      {{ with .Params.sources }}
+        <div class="provenance" aria-label="Sources">
+          <span class="prov-label">Sources</span>
+          <ul class="prov-sources">
+            {{ range . }}<li>{{ . }}</li>{{ end }}
+          </ul>
+        </div>
+      {{ end }}
+      {{ with .Params.references }}
+        <div class="provenance" aria-label="References">
+          <span class="prov-label">References</span>
+          <ul class="prov-sources">
+            {{ range . }}{{ $url := index (split . " ") 0 }}<li><a href="{{ $url }}" rel="noopener noreferrer">{{ . }}</a></li>{{ end }}
+          </ul>
+        </div>
+      {{ end }}
+      <div class="source-meta">
+        {{ with .Params.created }}<span>Created: {{ . }}</span>{{ end }}
+        {{ if .Params.updated }}<span>Updated: {{ .Params.updated }}</span>
+        {{ else }}{{ with $.GitInfo }}<span>Updated: {{ .AuthorDate.Format "2006-01-02 15:04" }}</span>{{ end }}{{ end }}
+        {{ with .Params.source_path }}{{ with site.Params.github }}<a href="{{ . }}/edit/main/{{ $.Params.source_path }}">Edit on GitHub</a>{{ end }}{{ end }}
+      </div>
+    </div>
+  </article>
+{{ end }}

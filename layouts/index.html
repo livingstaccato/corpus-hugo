@@ -1,0 +1,34 @@
+{{ define "main" }}
+  <section class="hero">
+    <div class="home-inner">
+      <p class="section-label">{{ site.Title }}</p>
+      <h1>{{ with site.Params.tagline }}{{ . }}{{ else }}{{ site.Title }}{{ end }}</h1>
+      {{ with site.Params.description }}<p class="lede">{{ . }}</p>{{ end }}
+      {{ if site.Params.search_enabled }}
+      <div class="search-panel">
+        <label for="knowledge-search">Search knowledge</label>
+        <input id="knowledge-search" type="search" placeholder="Search this knowledge base..." autocomplete="off">
+        <div id="search-results" class="search-results" aria-live="polite"></div>
+      </div>
+      {{ end }}
+      {{ with site.Params.cta_url }}<a class="button" href="{{ . | relURL }}">{{ site.Params.cta_label }}</a>{{ end }}
+    </div>
+  </section>
+  <section class="band">
+    <div class="home-inner card-grid">
+      {{ range .Site.Sections.ByTitle }}
+        <a class="knowledge-card" href="{{ .RelPermalink }}">
+          <span>{{ .Title }}</span>
+          {{ with .Params.summary }}<small>{{ . }}</small>{{ end }}
+        </a>
+      {{ end }}
+    </div>
+  </section>
+  {{ if site.Params.search_enabled }}
+  {{ $search := resources.Get "js/search.js" | resources.Minify | resources.Fingerprint }}
+  <script src="{{ $search.RelPermalink }}"
+          data-search-index="{{ "search-index.json" | relURL }}"
+          data-manifest="{{ printf "%scontexts.json" (site.Params.knowledge_hub_root | default "/knowledge/") }}"
+          data-knowledge-id="{{ site.Params.knowledge_id }}" defer></script>
+  {{ end }}
+{{ end }}

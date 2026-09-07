@@ -1,0 +1,59 @@
+{{- $u := .Destination -}}
+{{- $text := .Text | safeHTML -}}
+{{- if or (strings.HasPrefix $u "http://") (strings.HasPrefix $u "https://") (strings.HasPrefix $u "ssh://") (strings.HasPrefix $u "mailto:") (strings.HasPrefix $u "#") -}}
+{{- /* External / anchor links: leave untouched. */ -}}
+<a href="{{ $u }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ $text }}</a>
+{{- else if strings.HasPrefix $u "x-kb:" -}}
+{{- /* Cross-KB link: x-kb:<corpus>/<page-path>[#frag] resolves to the hub-absolute
+       URL for another corpus mounted under /knowledge/. One corpus may be the hub
+       root itself (mounted at /knowledge/ with no subpath) — set
+       site.Params.knowledge_hub_root_id to its id to collapse that one subpath.
+       Lets a page in one corpus link into another; resolves in the deployed hub
+       and in any local multi-site preview. */ -}}
+{{- $rest := strings.TrimPrefix "x-kb:" $u -}}
+{{- $frag := "" -}}
+{{- if strings.Contains $rest "#" -}}{{- $fp := split $rest "#" -}}{{- $rest = index $fp 0 -}}{{- $frag = printf "#%s" (index $fp 1) -}}{{- end -}}
+{{- $segs := split $rest "/" -}}
+{{- $id := index $segs 0 -}}
+{{- $page := delimit (after 1 $segs) "/" -}}
+{{- $page = cond (strings.HasSuffix $page "README") (strings.TrimSuffix "README" $page) $page -}}
+{{- $sub := cond (eq $id site.Params.knowledge_hub_root_id) "" $id -}}
+{{- $href := printf "/%s/" (path.Join "knowledge" $sub $page) -}}
+<a href="{{ $href }}{{ $frag }}" class="x-kb-link"{{ with .Title }} title="{{ . }}"{{ end }}>{{ $text }}</a>
+{{- else if strings.HasPrefix $u "/" -}}
+{{- /* Site-absolute links (e.g. /kb-diagrams/…, /runbooks/…): in this Hugo
+       config relURL is a no-op on a leading-slash path, so strip the leading
+       slash first — relURL then adds the baseURL mount prefix (/knowledge/). */ -}}
+<a href="{{ strings.TrimPrefix "/" $u | relURL }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ $text }}</a>
+{{- else if findRE `\.(puml|svg|png)$` $u -}}
+{{- /* Co-located diagram asset link (e.g. "Diagram source:" pointers): assets
+       mirror to /kb-diagrams/<knowledge-rel-dir>/, same mapping as the image
+       render hook. */ -}}
+<a href="{{ path.Join "kb-diagrams" .Page.File.Dir $u | relURL }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ $text }}</a>
+{{- else if findRE `\.md(#.*)?$` $u -}}
+{{- /* Relative .md cross-link: resolve against the page's source dir and emit
+       the pretty URL so it works on the rendered site. The raw .md target is
+       left in the Markdown so other renderers of the source (filesystem, GitHub,
+       an internal wiki) still resolve it. README.md maps to the section's
+       directory URL. */ -}}
+{{- /* Resolve against the page's SOURCE dir, not its section: pages in dirs
+       without _index.md belong to an ancestor section, which made ../ eat the
+       wrong path segment (runbooks/env/x.md + ../release/y.md -> /release/y). */ -}}
+{{- $base := "" -}}
+{{- with .Page.File -}}{{- $base = .Dir -}}{{- else -}}{{- $base = .Page.RelPermalink -}}{{- end -}}
+{{- /* Root-level files yield a leading-slash Dir; keep base relative so relURL
+       reliably prepends the baseURL mount path. */ -}}
+{{- $base = strings.TrimPrefix "/" $base -}}
+{{- $path := $u -}}
+{{- $frag := "" -}}
+{{- if strings.Contains $u "#" -}}
+{{- $parts := split $u "#" -}}
+{{- $path = index $parts 0 -}}
+{{- $frag = printf "#%s" (index $parts 1) -}}
+{{- end -}}
+{{- $clean := cond (strings.HasSuffix $path "README.md") (strings.TrimSuffix "README.md" $path) (strings.TrimSuffix ".md" $path) -}}
+{{- $href := printf "%s/" (path.Join $base $clean) | relURL -}}
+<a href="{{ $href }}{{ $frag }}">{{ $text }}</a>
+{{- else -}}
+<a href="{{ $u }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ $text }}</a>
+{{- end -}}

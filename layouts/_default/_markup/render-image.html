@@ -1,0 +1,14 @@
+{{- $u := .Destination -}}
+{{- if or (strings.HasPrefix $u "http://") (strings.HasPrefix $u "https://") -}}
+<img src="{{ $u }}" alt="{{ .Text }}" loading="lazy">
+{{- else -}}
+{{- /* Co-located diagram: resolve the relative ref against the page's content
+       directory (relative to the content root — NOT RelPermalink, which carries
+       the baseURL path prefix and produced a broken /kb-diagrams/<baseurl>/…
+       path). Joining WITHOUT a leading slash keeps it relative so relURL adds
+       the baseURL mount prefix (e.g. /knowledge/kb-diagrams/<section>/x.svg). */ -}}
+{{- $src := (path.Join "kb-diagrams" .Page.File.Dir $u) | relURL -}}
+<a class="kb-diagram-link" href="{{ $src }}" target="_blank" rel="noopener">
+  <img class="kb-diagram" src="{{ $src }}" alt="{{ .Text }}" loading="lazy">
+</a>
+{{- end -}}

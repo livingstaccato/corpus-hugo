@@ -1,0 +1,39 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+    {{ $gitDate := "" }}{{ $gitSha := "" }}
+    {{ with .GitInfo }}{{ $gitDate = .AuthorDate.Format "2006.01.02" }}{{ $gitSha = .AbbreviatedHash }}{{ end }}
+    {{ $buildDate := getenv "HUGO_BUILD_DATE" | default $gitDate }}
+    {{ $buildSha := getenv "HUGO_GIT_SHA" | default $gitSha }}
+    {{ $buildStream := getenv "HUGO_BUILD_STREAM" | default "local" }}
+    {{ if not $buildDate }}{{ $buildDate = now.Format "2006.01.02" }}{{ end }}
+    {{ if gt (len $buildSha) 7 }}{{ $buildSha = substr $buildSha 0 7 }}{{ end }}
+    {{ if not $buildSha }}{{ $buildSha = "local" }}{{ end }}
+
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="footer-brand-name" href="{{ site.Home.RelPermalink }}">{{ site.Title }}</a>
+        {{ with site.Params.tagline }}<p class="footer-tagline">{{ . }}</p>{{ end }}
+      </div>
+
+      <div class="footer-cols">
+        <div class="footer-col footer-contexts-wrap">
+          <span class="footer-col-label">Knowledge bases</span>
+          <nav class="footer-contexts" aria-label="Knowledge bases"></nav>
+        </div>
+        <div class="footer-col">
+          <span class="footer-col-label">Resources</span>
+          <nav class="footer-resources" aria-label="Resources">
+            {{ with site.Params.github }}<a href="{{ . }}">GitHub</a>{{ end }}
+            <a href="{{ site.Home.RelPermalink }}">Home</a>
+            <a href="#top">Back to top</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copy">© {{ now.Format "2006" }} {{ site.Params.copyrightHolder | default site.Title }}</span>
+      <span class="build-stamp">Version {{ $buildDate }}.{{ $buildStream }}.{{ $buildSha }}</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,19 @@
+baseURL = "/"
+title = "Corpus Theme — Example"
+theme = "corpus-hugo"
+themesDir = "../.."
+
+[security]
+  [security.funcs]
+    getenv = ['^HUGO_', '^CI$']
+
+[params]
+  description = "Theme example."
+  knowledge_id = "example"
+  tagline = "Tokenized light/dark knowledge-base theme."
+  github = "https://example.invalid"
+
+[[menu.main]]
+  name = "Docs"
+  url = "/docs/"
+  weight = 1

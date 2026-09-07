@@ -1,0 +1,7 @@
+web/public/
+public/
+resources/
+.hugo_build.lock
+
+# local hub preview output
+hub/

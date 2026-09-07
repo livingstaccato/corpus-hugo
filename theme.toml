@@ -1,0 +1,4 @@
+name = "Corpus"
+license = "MIT"
+min_version = "0.120.0"
+description = "Tokenized light/dark Hugo theme for a knowledge-base site, with an optional multi-site hub switcher and cross-site search."
