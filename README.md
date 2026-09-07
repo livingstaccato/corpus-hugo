@@ -18,6 +18,12 @@ the theme.
 - Member chips (`assets/js/member-chip.js`): click a name to copy an email.
 - Build stamp in the footer, sourced from `HUGO_BUILD_DATE` / `HUGO_GIT_SHA` /
   `HUGO_BUILD_STREAM` env vars, falling back to Hugo's git info.
+- Canonical link + Open Graph/Twitter meta on every page, a default favicon
+  (override by dropping your own `static/favicon.svg`), and a themed 404 page.
+- Contrast-checked against WCAG AA in both light and dark mode, including
+  focus indicators (`--link`, not `--accent`, is what text and outlines use
+  against a page background — `--accent` alone is only safe as a filled
+  background with `--on-accent` text on top).
 
 ## Site params
 
@@ -33,6 +39,7 @@ the theme.
 | `copyrightHolder` | Footer copyright name (defaults to `site.Title`) |
 | `github` | Footer "GitHub" link |
 | `watermark` | Path to a background watermark image |
+| `social_image` | Open Graph / Twitter card image |
 
 ## Try it
 

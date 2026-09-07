@@ -14,6 +14,11 @@
   --font-body:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
   --font-head:var(--font-body);
   --font-mono:Consolas,"Liberation Mono",Courier,monospace;
+  /* --accent (#4f46e5) is 2.65:1 on the always-dark footer and on-page dark
+     backgrounds — well under WCAG's 3:1 floor for text/focus indicators. This
+     is the same hue lightened for those two contexts; --link already does the
+     equivalent job for regular page text in dark mode. */
+  --accent-on-dark:#8a86ff;
 }
 
 /* DARK — explicit toggle */

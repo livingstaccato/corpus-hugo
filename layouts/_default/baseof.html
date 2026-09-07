@@ -8,7 +8,16 @@
       if(t){document.documentElement.setAttribute("data-theme",t)}})();
     </script>
     <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} | {{ site.Title }}{{ end }}</title>
-    <meta name="description" content="{{ with or .Params.description site.Params.description }}{{ . }}{{ end }}">
+    {{ $desc := or .Params.description .Params.summary site.Params.description }}
+    <meta name="description" content="{{ $desc }}">
+    <link rel="canonical" href="{{ .Permalink }}">
+    <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
+    <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+    <meta property="og:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }}{{ end }}">
+    <meta property="og:description" content="{{ $desc }}">
+    <meta property="og:url" content="{{ .Permalink }}">
+    {{ with site.Params.social_image }}<meta property="og:image" content="{{ . | absURL }}">{{ end }}
+    <meta name="twitter:card" content="{{ if site.Params.social_image }}summary_large_image{{ else }}summary{{ end }}">
     {{ $tokens := resources.Get "css/tokens.css" }}
     {{ $site := resources.Get "css/site.css" }}
     {{ $content := resources.Get "css/content.css" }}

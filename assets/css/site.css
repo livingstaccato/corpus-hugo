@@ -6,6 +6,15 @@
   box-sizing: border-box;
 }
 
+/* Baseline focus ring — components with their own :focus-visible rule above
+   override this; everything else (nav links, cards, the toggle, the search
+   input) gets a consistent, contrast-checked one instead of the browser
+   default, which is easy to lose against a colored pill background. */
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
 body {
   background: var(--bg);
   color: var(--fg);
@@ -159,7 +168,7 @@ body > .site-header { z-index: 10; }
 }
 
 .nav-dropdown-menu a:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--link);
   outline-offset: 2px;
 }
 
@@ -193,7 +202,7 @@ body > .site-header { z-index: 10; }
 }
 
 .section-label {
-  color: var(--accent);
+  color: var(--link);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0;
@@ -487,7 +496,7 @@ h4 {
 }
 
 .build-stamp {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.6);
   font-family: var(--font-mono);
   font-size: 0.75rem;
 }
@@ -498,7 +507,7 @@ h4 {
 }
 
 .site-footer a:hover {
-  color: var(--accent);
+  color: var(--accent-on-dark);
 }
 
 /* ── Grouped section tree (per-service subsections) ── */
@@ -567,7 +576,7 @@ h4 {
   border: 1px solid transparent; color: var(--fg); text-decoration: none;
 }
 .ctx-menu a:hover { background: var(--surface-2); border-color: var(--border); }
-.ctx-menu a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ctx-menu a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 .ctx-menu li.ctx-selected a {
   background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600;
 }
@@ -582,20 +591,22 @@ h4 {
   padding: 0.15rem 0.7rem; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: var(--radius-pill);
   color: rgba(255, 255, 255, 0.8); font-weight: 500; font-size: 0.8rem; text-decoration: none;
 }
-.footer-contexts a:hover { color: var(--c-white); border-color: var(--accent); }
+.footer-contexts a:hover { color: var(--c-white); border-color: var(--accent-on-dark); }
 .footer-contexts a.is-current {
   background: var(--accent); color: var(--on-accent); border-color: var(--accent);
 }
 
 /* ── Responsive ── */
 @media (max-width: 720px) {
-  .hero,
-  .content-layout,
   .page-heading,
   .footer-inner {
     align-items: flex-start;
   }
 
+  /* content-layout deliberately keeps the flex default (stretch), not
+     flex-start: flex-start sizes a column child to its own content instead
+     of the container's width, so a wide h1 inside .content-main dragged
+     the whole column (and the page) wider than the viewport. */
   .content-layout,
   .page-heading,
   .footer-inner {
@@ -649,12 +660,14 @@ h4 {
 
 /* Related links + cross-KB links (added for cross-reference rendering) */
 .related { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border, #e2e2e2); }
-.related .prov-label { display: block; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; opacity: .7; margin-bottom: .4rem; }
+.related .prov-label { display: block; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--fg-muted); margin-bottom: .4rem; }
 .rel-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .4rem .8rem; }
 .rel-list li { margin: 0; }
 .rel-list a { text-decoration: none; }
-.rel-kb { opacity: .55; font-size: .85em; }
-.rel-unlinked { opacity: .6; }
+/* color, not opacity: opacity dims below AA contrast on a light background
+   (.55-.6 measured at ~3.8-4.4:1 against --bg, under the 4.5:1 floor). */
+.rel-kb { color: var(--fg-muted); font-size: .85em; }
+.rel-unlinked { color: var(--fg-muted); }
 a.x-kb-link::after { content: " \2197"; font-size: .8em; opacity: .5; }
 
 /* Member chips — names rendered as pills; click-to-copy email (member-chip.js) */
@@ -678,8 +691,11 @@ button.member-chip {
 button.member-chip:hover,
 button.member-chip:focus-visible {
   background: var(--accent-tint);
-  border-color: var(--accent);
-  outline: none;
+  border-color: var(--link);
+}
+button.member-chip:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
 }
 .member-chip--plain {
   cursor: default;
