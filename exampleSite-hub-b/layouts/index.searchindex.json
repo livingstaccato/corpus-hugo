@@ -1,0 +1,14 @@
+[
+{{- $pages := where site.RegularPages "Kind" "page" -}}
+{{- range $i, $p := $pages -}}
+  {{- if $i }},{{ end }}
+  {
+    "title": {{ $p.Title | jsonify }},
+    "summary": {{ (or $p.Params.summary $p.Params.description "") | jsonify }},
+    "kind": {{ (or $p.Params.kind $p.Section "doc") | jsonify }},
+    "source_path": {{ (or $p.Params.source_path $p.File.Path "") | jsonify }},
+    "text": {{ $p.Plain | truncate 400 | jsonify }},
+    "url": {{ $p.RelPermalink | jsonify }}
+  }
+{{- end }}
+]

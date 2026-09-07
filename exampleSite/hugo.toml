@@ -22,6 +22,12 @@ themesDir = "../.."
 [params]
   description = "A tokenized, light/dark Hugo theme for a knowledge base or docs site — this page is itself built with it."
   knowledge_id = "example"
+  # This corpus is served at the hub's own root (no /guides-hub/-style
+  # subpath), so knowledge_hub_root is "/" instead of the "/knowledge/"
+  # default, and this id is the one that collapses to no subpath in
+  # x-kb: links and the hub manifest below.
+  knowledge_hub_root = "/"
+  knowledge_hub_root_id = "example"
   tagline = "Corpus"
   search_enabled = true
   cta_url = "/docs/getting-started/"

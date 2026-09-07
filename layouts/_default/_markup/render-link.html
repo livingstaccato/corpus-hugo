@@ -5,11 +5,11 @@
 <a href="{{ $u }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ $text }}</a>
 {{- else if strings.HasPrefix $u "x-kb:" -}}
 {{- /* Cross-KB link: x-kb:<corpus>/<page-path>[#frag] resolves to the hub-absolute
-       URL for another corpus mounted under /knowledge/. One corpus may be the hub
-       root itself (mounted at /knowledge/ with no subpath) — set
-       site.Params.knowledge_hub_root_id to its id to collapse that one subpath.
-       Lets a page in one corpus link into another; resolves in the deployed hub
-       and in any local multi-site preview. */ -}}
+       URL for another corpus mounted under knowledge_hub_root (default
+       /knowledge/). One corpus may be the hub root itself (mounted with no
+       subpath) — set site.Params.knowledge_hub_root_id to its id to collapse
+       that one subpath. Lets a page in one corpus link into another;
+       resolves in the deployed hub and in any local multi-site preview. */ -}}
 {{- $rest := strings.TrimPrefix "x-kb:" $u -}}
 {{- $frag := "" -}}
 {{- if strings.Contains $rest "#" -}}{{- $fp := split $rest "#" -}}{{- $rest = index $fp 0 -}}{{- $frag = printf "#%s" (index $fp 1) -}}{{- end -}}
@@ -17,8 +17,9 @@
 {{- $id := index $segs 0 -}}
 {{- $page := delimit (after 1 $segs) "/" -}}
 {{- $page = cond (strings.HasSuffix $page "README") (strings.TrimSuffix "README" $page) $page -}}
+{{- $hubRoot := strings.Trim (site.Params.knowledge_hub_root | default "/knowledge/") "/" -}}
 {{- $sub := cond (eq $id site.Params.knowledge_hub_root_id) "" $id -}}
-{{- $href := printf "/%s/" (path.Join "knowledge" $sub $page) -}}
+{{- $href := printf "/%s/" (path.Join $hubRoot $sub $page) -}}
 <a href="{{ $href }}{{ $frag }}" class="x-kb-link"{{ with .Title }} title="{{ . }}"{{ end }}>{{ $text }}</a>
 {{- else if strings.HasPrefix $u "/" -}}
 {{- /* Site-absolute links (e.g. /kb-diagrams/…, /runbooks/…): in this Hugo

@@ -44,8 +44,23 @@ the theme.
 ## Try it
 
 ```sh
-./scripts/preview.sh        # serves exampleSite at :1313
+./scripts/preview.sh        # serves exampleSite alone, at :1313
+./scripts/preview-hub.sh    # builds exampleSite + exampleSite-hub-b, serves both
+                             # merged at :8788 — the hub switcher, footer context
+                             # pills, x-kb: links, and cross-corpus search all need
+                             # two real corpora to do anything, so preview.sh alone
+                             # never shows them.
 ```
+
+`exampleSite-hub-b/` is a second, separately-built Hugo site using this same
+theme, mounted at `/guides-hub/` under the first one. Its `hugo.toml` and
+`exampleSite/hugo.toml` both set `knowledge_hub_root = "/"` (root-mounted,
+not the `/knowledge/` default) and `knowledge_hub_root_id = "example"` (the
+corpus with no subpath) — `exampleSite/static/contexts.json` is the manifest
+both sites' switcher and search fetch. This is the pattern for joining any
+number of independently-built sites into one hub: give them a shared,
+absolute `knowledge_hub_root`, one shared `contexts.json` at that path, and
+deploy them merged under one origin.
 
 ## License
 

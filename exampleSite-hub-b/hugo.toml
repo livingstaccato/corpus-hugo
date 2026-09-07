@@ -1,0 +1,35 @@
+baseURL = "/guides-hub/"
+title = "Guides Hub"
+theme = "corpus-hugo"
+themesDir = "../.."
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[security]
+  [security.funcs]
+    getenv = ['^HUGO_', '^CI$']
+
+[outputFormats.searchindex]
+  mediaType = "application/json"
+  baseName = "search-index"
+  isPlainText = true
+  notAlternative = true
+
+[outputs]
+  home = ["HTML", "searchindex"]
+
+[params]
+  description = "A second corpus, built as a separate Hugo site, joined to the same hub."
+  knowledge_id = "guides-hub"
+  knowledge_hub_root = "/"
+  knowledge_hub_root_id = "example"
+  tagline = "A second corpus"
+  search_enabled = true
+  copyrightHolder = "Corpus"
+  github = "https://github.com/livingstaccato/corpus-hugo"
+
+[[menu.main]]
+  name = "Guide"
+  url = "/guide/"
+  weight = 1

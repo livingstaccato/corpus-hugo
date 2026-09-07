@@ -48,8 +48,9 @@
                 {{- $id := index $segs 0 -}}
                 {{- $page := delimit (after 1 $segs) "/" -}}
                 {{- $page = cond (strings.HasSuffix $page "README") (strings.TrimSuffix "README" $page) $page -}}
+                {{- $hubRoot := strings.Trim (site.Params.knowledge_hub_root | default "/knowledge/") "/" -}}
                 {{- $sub := cond (eq $id site.Params.knowledge_hub_root_id) "" $id -}}
-                {{- $href := printf "/%s/" (path.Join "knowledge" $sub $page) -}}
+                {{- $href := printf "/%s/" (path.Join $hubRoot $sub $page) -}}
                 <li><a href="{{ $href }}" class="x-kb-link">{{ $page | path.Base | humanize }}</a> <span class="rel-kb">({{ $id }})</span></li>
               {{ else }}
                 {{- /* Resolve a same-corpus related entry. Try the value as-is, then
@@ -81,12 +82,14 @@
           </ul>
         </div>
       {{ end }}
-      <div class="source-meta">
-        {{ with .Params.created }}<span>Created: {{ . }}</span>{{ end }}
-        {{ if .Params.updated }}<span>Updated: {{ .Params.updated }}</span>
-        {{ else }}{{ with $.GitInfo }}<span>Updated: {{ .AuthorDate.Format "2006-01-02 15:04" }}</span>{{ end }}{{ end }}
-        {{ with .Params.source_path }}{{ with site.Params.github }}<a href="{{ . }}/edit/main/{{ $.Params.source_path }}">Edit on GitHub</a>{{ end }}{{ end }}
-      </div>
+      {{ if or .Params.created .Params.updated .GitInfo (and .Params.source_path site.Params.github) }}
+        <div class="source-meta">
+          {{ with .Params.created }}<span>Created: {{ . }}</span>{{ end }}
+          {{ if .Params.updated }}<span>Updated: {{ .Params.updated }}</span>
+          {{ else }}{{ with .GitInfo }}<span>Updated: {{ .AuthorDate.Format "2006-01-02 15:04" }}</span>{{ end }}{{ end }}
+          {{ with .Params.source_path }}{{ with site.Params.github }}<a href="{{ . }}/edit/main/{{ $.Params.source_path }}">Edit on GitHub</a>{{ end }}{{ end }}
+        </div>
+      {{ end }}
     </div>
   </article>
 {{ end }}
