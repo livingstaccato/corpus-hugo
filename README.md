@@ -24,6 +24,12 @@ the theme.
   focus indicators (`--link`, not `--accent`, is what text and outlines use
   against a page background — `--accent` alone is only safe as a filled
   background with `--on-accent` text on top).
+- Two extension hooks for plugging in another Hugo module's assets without
+  forking `baseof.html`: `layouts/partials/hooks/head-end.html` (extra
+  `<link>`/`<script>`/`<meta>`, right before `</head>`) and
+  `layouts/partials/hooks/body-start.html` (markup right after `<body>`, for
+  something like an inline SVG sprite). Both are empty by default — a
+  consuming site overrides them at the same path in its own `layouts/`.
 
 ## Site params
 

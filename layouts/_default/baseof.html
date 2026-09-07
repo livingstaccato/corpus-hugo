@@ -25,8 +25,10 @@
     <link rel="stylesheet" href="{{ $css.RelPermalink }}">
     {{ $js := slice (resources.Get "js/theme-toggle.js") (resources.Get "js/ctx-switcher.js") (resources.Get "js/member-chip.js") | resources.Concat "js/head.js" | resources.Minify | resources.Fingerprint }}
     <script src="{{ $js.RelPermalink }}" defer></script>
+    {{ partial "hooks/head-end.html" . }}
   </head>
   <body>
+    {{ partial "hooks/body-start.html" . }}
     {{ with site.Params.watermark }}<img class="site-watermark" src="{{ . | relURL }}" alt="" aria-hidden="true">{{ end }}
     {{ partial "header.html" . }}
     <main>{{ block "main" . }}{{ end }}</main>
