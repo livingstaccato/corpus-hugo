@@ -4,7 +4,7 @@
   var footer = document.querySelector(".footer-contexts");
   var manifestUrl = root && root.dataset.manifest;
   var currentId = (root && root.dataset.knowledgeId) || "";
-  if (!manifestUrl) return; // no hub wiring → standalone site, plain title link
+  if (!manifestUrl || !currentId) return; // no knowledge_id → standalone site, no hub to fetch
 
   var current = root && root.querySelector(".ctx-current");
   var menu = root && root.querySelector(".ctx-menu");
